@@ -69,6 +69,7 @@ export function makePickerWithState<T extends any>({
       openTo,
       orientation,
       renderDay,
+      renderWeek,
       rightArrowButtonProps,
       rightArrowIcon,
       shouldDisableDate,
@@ -116,6 +117,7 @@ export function makePickerWithState<T extends any>({
           openTo={openTo}
           orientation={orientation}
           renderDay={renderDay}
+          renderWeek={renderWeek}
           rightArrowButtonProps={rightArrowButtonProps}
           rightArrowIcon={rightArrowIcon}
           shouldDisableDate={shouldDisableDate}

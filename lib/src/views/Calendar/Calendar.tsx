@@ -26,6 +26,12 @@ export interface OutterCalendarProps {
     dayInCurrentMonth: boolean,
     dayComponent: JSX.Element
   ) => JSX.Element;
+  /** Custom renderer for week @DateIOType */
+  renderWeek?: (
+    week: MaterialUiPickersDate[],
+    selectedDate: MaterialUiPickersDate,
+    weekComponent: JSX.Element
+  ) => JSX.Element;
   /**
    * Enables keyboard listener for moving between days in calendar
    * @default true
@@ -89,6 +95,7 @@ export class Calendar extends React.Component<CalendarProps, CalendarState> {
   static contextType = VariantContext;
   static propTypes: any = {
     renderDay: PropTypes.func,
+    renderWeek: PropTypes.func,
     shouldDisableDate: PropTypes.func,
     allowKeyboardControl: PropTypes.bool,
   };
@@ -243,14 +250,23 @@ export class Calendar extends React.Component<CalendarProps, CalendarState> {
   };
 
   private renderWeeks = () => {
-    const { utils, classes } = this.props;
+    const { utils, classes, renderWeek } = this.props;
     const weeks = utils.getWeekArray(this.state.currentMonth);
 
-    return weeks.map(week => (
+    const elements = weeks.map(week => (
       <div key={`week-${week[0]!.toString()}`} className={classes.week}>
         {this.renderDays(week)}
       </div>
     ));
+
+    if (renderWeek) {
+      const { date, utils } = this.props;
+      const selectedDate = utils.startOfDay(date);
+      for (let i = 0; i < elements.length; i++)
+        elements[i] = renderWeek(weeks[i], selectedDate, elements[i]);
+    }
+
+    return elements;
   };
 
   private renderDays = (week: MaterialUiPickersDate[]) => {
